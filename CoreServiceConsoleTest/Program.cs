@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ServiceProcess;
+using System.Threading;
 
 namespace CoreServiceConsoleTest
 {
@@ -6,7 +8,23 @@ namespace CoreServiceConsoleTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var runAsService = !Environment.UserInteractive;
+
+            if (runAsService)
+            {
+                var testService = new TestService();
+
+                ServiceBase.Run(testService);
+            }
+            else
+            {
+                var testService = new TestService();
+                testService.StartDirect();
+
+                Console.WriteLine("Press a key to exit...");
+                Console.ReadKey();
+                testService.StopDirect();
+            }
         }
     }
 }
